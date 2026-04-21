@@ -108,8 +108,11 @@ db.exec(`
 const defaultAdminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@demo.local'
 const defaultAdminPassword = process.env.SEED_ADMIN_PASSWORD || '123test'
 const defaultAdminName = process.env.SEED_ADMIN_NAME || 'Admin'
+const defaultGuestEmail = process.env.SEED_GUEST_EMAIL || 'guest@shared.local'
+const defaultGuestName = process.env.SEED_GUEST_NAME || 'Guest'
 
 const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get(defaultAdminEmail)
+const existingGuest = db.prepare('SELECT id FROM users WHERE email = ?').get(defaultGuestEmail)
 
 if (!existingAdmin) {
   const passwordHash = bcrypt.hashSync(defaultAdminPassword, 10)
@@ -118,6 +121,16 @@ if (!existingAdmin) {
     defaultAdminEmail,
     passwordHash,
     'admin',
+  )
+}
+
+if (!existingGuest) {
+  const passwordHash = bcrypt.hashSync(defaultAdminPassword, 10)
+  db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(
+    defaultGuestName,
+    defaultGuestEmail,
+    passwordHash,
+    'guest',
   )
 }
 

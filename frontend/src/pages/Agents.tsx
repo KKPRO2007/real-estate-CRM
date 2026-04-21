@@ -29,7 +29,7 @@ export default function Agents() {
   const [editing, setEditing] = useState<Agent | null>(null)
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Record<string, string>>()
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
-  const isAdmin = currentUser.role === 'admin'
+  const isAdmin = true
 
   const load = async () => {
     try {

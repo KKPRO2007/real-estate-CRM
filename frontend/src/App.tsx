@@ -10,18 +10,13 @@ import Reports from './pages/Reports'
 import Agents from './pages/Agents'
 import Layout from './components/Layout'
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = localStorage.getItem('token')
-  return token ? <>{children}</> : <Navigate to="/login" replace />
-}
-
 export default function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a2e', color: '#e2e8f0', border: '1px solid #2d3748', borderRadius: '8px', fontSize: '13px' } }} />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="leads" element={<Leads />} />

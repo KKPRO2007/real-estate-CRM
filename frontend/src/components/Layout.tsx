@@ -58,7 +58,7 @@ export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const navigate = useNavigate()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const user = JSON.parse(localStorage.getItem('user') || '{"name":"Guest","role":"shared workspace"}')
 
   const logout = () => {
     localStorage.removeItem('token')
@@ -114,7 +114,7 @@ export default function Layout() {
           {!collapsed && (
             <div className="mb-3 rounded-xl bg-white/[0.03] px-3 py-2">
               <p className="truncate text-xs font-semibold text-white">{user.name || 'Team member'}</p>
-              <p className="text-[10px] capitalize text-slate-500">{user.role || 'agent'}</p>
+              <p className="text-[10px] capitalize text-slate-500">{user.role || 'shared workspace'}</p>
             </div>
           )}
           <button
@@ -158,7 +158,7 @@ export default function Layout() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-xs font-medium text-slate-200">{user.name || 'User'}</p>
-                <p className="text-[10px] capitalize text-slate-500">{user.role || 'agent'}</p>
+                <p className="text-[10px] capitalize text-slate-500">{user.role || 'shared workspace'}</p>
               </div>
             </div>
           </div>

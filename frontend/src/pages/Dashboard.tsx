@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [leadStats, setLeadStats] = useState<any>(null)
   const [dealStats, setDealStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -27,6 +28,9 @@ export default function Dashboard() {
         setOverview(overviewRes.data)
         setLeadStats(leadsRes.data)
         setDealStats(dealsRes.data)
+      })
+      .catch((err: any) => {
+        setError(err.response?.data?.error || 'Demo data is still waking up. Please wait a moment and refresh.')
       })
       .finally(() => setLoading(false))
   }, [])
@@ -48,8 +52,21 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+      <div className="flex min-h-[320px] items-center justify-center">
+        <div className="rounded-3xl border border-white/[0.08] bg-[#0f0f1a] px-8 py-10 text-center">
+          <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          <p className="mt-4 text-sm font-medium text-white">Loading dashboard</p>
+          <p className="mt-1 text-[12px] text-slate-500">The demo database may take a few seconds to respond on first open.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-3xl border border-amber-500/20 bg-amber-500/5 px-6 py-12 text-center">
+        <p className="text-sm font-semibold text-amber-300">Dashboard is temporarily unavailable</p>
+        <p className="mt-2 text-[12px] text-slate-400">{error}</p>
       </div>
     )
   }

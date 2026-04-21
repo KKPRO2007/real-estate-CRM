@@ -34,6 +34,7 @@ export default function Leads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [agents, setAgents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Lead | null>(null)
   const [search, setSearch] = useState('')
@@ -43,6 +44,7 @@ export default function Leads() {
   const load = async () => {
     try {
       setLoading(true)
+      setError('')
       const params: any = {}
       if (search) params.search = search
       if (statusFilter) params.status = statusFilter
@@ -50,7 +52,11 @@ export default function Leads() {
       setLeads(leadsRes.data)
       setAgents(agentsRes.data)
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Failed to load leads')
+      const message = err.response?.data?.error || 'The leads service is still starting. Please wait a moment and try again.'
+      setError(message)
+      setLeads([])
+      setAgents([])
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -145,7 +151,16 @@ export default function Leads() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16"><div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" /></div>
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0f0f1a] px-6 py-16 text-center">
+          <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          <p className="mt-4 text-sm font-medium text-white">Loading leads</p>
+          <p className="mt-1 text-[12px] text-slate-500">The shared demo data may need a few seconds to wake up.</p>
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-6 py-16 text-center">
+          <p className="text-sm font-medium text-amber-300">Leads are not ready yet</p>
+          <p className="mt-2 text-[12px] text-slate-400">{error}</p>
+        </div>
       ) : leads.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-white/[0.08] bg-[#0f0f1a] px-6 py-16 text-center">
           <p className="text-[13px] text-slate-500">No leads found for the current filters.</p>

@@ -22,12 +22,16 @@ export default function Reports() {
   const [leadStats, setLeadStats] = useState<LeadStats | null>(null)
   const [dealStats, setDealStats] = useState<DealStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([api.get('/leads/stats'), api.get('/deals/stats')])
       .then(([leadsRes, dealsRes]) => {
         setLeadStats(leadsRes.data)
         setDealStats(dealsRes.data)
+      })
+      .catch((err: any) => {
+        setError(err.response?.data?.error || 'Reports are still loading from the demo database.')
       })
       .finally(() => setLoading(false))
   }, [])
@@ -72,7 +76,16 @@ export default function Reports() {
         <div className="rounded-2xl border border-white/[0.06] bg-[#0f0f1a] p-5">
           <h3 className="mb-4 text-sm font-medium text-slate-200">Lead Sources</h3>
           {loading ? (
-            <div className="flex h-64 items-center justify-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" /></div>
+            <div className="flex h-64 flex-col items-center justify-center text-center">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+              <p className="mt-4 text-sm font-medium text-white">Loading reports</p>
+              <p className="mt-1 text-[12px] text-slate-500">Analytics may take a few seconds while demo data reconnects.</p>
+            </div>
+          ) : error ? (
+            <div className="flex min-h-[180px] flex-col items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/5 px-6 text-center">
+              <p className="text-[13px] font-medium text-amber-300">Reports are not ready yet</p>
+              <p className="mt-1 text-[11px] text-slate-400">{error}</p>
+            </div>
           ) : leadSourceData.length === 0 ? (
             <div className="flex min-h-[180px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.02] px-6 text-center">
               <p className="text-[13px] font-medium text-slate-300">No lead source data yet</p>

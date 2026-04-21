@@ -12,6 +12,7 @@ interface Client { id: number; name: string; email: string; phone: string; type:
 export default function Clients() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Client | null>(null)
   const [search, setSearch] = useState('')
@@ -19,12 +20,22 @@ export default function Clients() {
   const { register, handleSubmit, reset } = useForm<any>()
 
   const load = async () => {
-    const params: any = {}
-    if (search) params.search = search
-    if (typeFilter) params.type = typeFilter
-    const res = await api.get('/clients', { params })
-    setClients(res.data)
-    setLoading(false)
+    try {
+      setLoading(true)
+      setError('')
+      const params: any = {}
+      if (search) params.search = search
+      if (typeFilter) params.type = typeFilter
+      const res = await api.get('/clients', { params })
+      setClients(res.data)
+    } catch (err: any) {
+      const message = err.response?.data?.error || 'The clients list is still loading from the demo database.'
+      setError(message)
+      setClients([])
+      toast.error(message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [search, typeFilter])
@@ -79,7 +90,16 @@ export default function Clients() {
 
       <div className="grid grid-cols-2 gap-4">
         {loading ? (
-          <div className="col-span-2 flex justify-center py-16"><div className="w-5 h-5 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" /></div>
+          <div className="col-span-2 rounded-2xl border border-white/[0.06] bg-[#0f0f1a] px-6 py-16 text-center">
+            <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <p className="mt-4 text-sm font-medium text-white">Loading clients</p>
+            <p className="mt-1 text-[12px] text-slate-500">The shared demo workspace may respond a little slowly at first.</p>
+          </div>
+        ) : error ? (
+          <div className="col-span-2 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-6 py-16 text-center">
+            <p className="text-sm font-medium text-amber-300">Clients are not ready yet</p>
+            <p className="mt-2 text-[12px] text-slate-400">{error}</p>
+          </div>
         ) : clients.length === 0 ? (
           <div className="col-span-2 text-center py-16 text-slate-600 text-[13px]">No clients found</div>
         ) : clients.map((c, i) => (

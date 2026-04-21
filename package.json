@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "dev:frontend": "npm --workspace frontend run dev",
-    "dev:backend": "npm --workspace backend run dev",
-    "build": "npm --workspace frontend run build && npm --workspace backend run build"
+    "dev:backend": "npm --workspace Backend run dev",
+    "build": "npm --workspace frontend run build && npm --workspace Backend run build"
   },
   "overrides": {
     "@babel/helper-compilation-targets": {

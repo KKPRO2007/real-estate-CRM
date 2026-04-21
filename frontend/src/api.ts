@@ -1,7 +1,9 @@
 import axios from 'axios'
+import { handleDemoRequest } from './demoApi'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
+  timeout: 4000,
 })
 
 api.interceptors.request.use(config => {
@@ -16,7 +18,13 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(
   response => response,
-  error => Promise.reject(error),
+  async error => {
+    try {
+      return await handleDemoRequest(error.config)
+    } catch {
+      return Promise.reject(error)
+    }
+  },
 )
 
 export default api

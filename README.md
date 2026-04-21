@@ -73,7 +73,7 @@ api/        Vercel serverless entry
 Create `frontend/.env`:
 
 ```env
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=/api
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_key
 ```
 

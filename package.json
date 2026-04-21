@@ -1,0 +1,18 @@
+{
+  "name": "real-estate-crm",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "Backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --workspace frontend run dev",
+    "dev:backend": "npm --workspace backend run dev",
+    "build": "npm --workspace frontend run build && npm --workspace backend run build"
+  },
+  "overrides": {
+    "@babel/helper-compilation-targets": {
+      "lru-cache": "5.1.1"
+    }
+  }
+}

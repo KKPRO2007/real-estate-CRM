@@ -8,7 +8,8 @@
   "scripts": {
     "dev:frontend": "npm --workspace frontend run dev",
     "dev:backend": "npm --workspace Backend run dev",
-    "build": "npm --workspace frontend run build && npm --workspace Backend run build"
+    "build": "npm --workspace frontend run build && npm --workspace Backend run build",
+    "build:vercel": "npm --workspace frontend run build && node scripts/prepare-vercel-output.mjs"
   },
   "overrides": {
     "@babel/helper-compilation-targets": {

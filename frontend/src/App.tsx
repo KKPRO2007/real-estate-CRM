@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -33,7 +33,7 @@ function DemoSessionRoute() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a2e', color: '#e2e8f0', border: '1px solid #2d3748', borderRadius: '8px', fontSize: '13px' } }} />
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -51,6 +51,6 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }

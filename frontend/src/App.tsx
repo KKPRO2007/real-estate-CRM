@@ -36,20 +36,20 @@ export default function App() {
     <HashRouter>
       <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a2e', color: '#e2e8f0', border: '1px solid #2d3748', borderRadius: '8px', fontSize: '13px' } }} />
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route element={<DemoSessionRoute />}>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="leads" element={<Leads />} />
-            <Route path="properties" element={<Properties />} />
-            <Route path="clients" element={<Clients />} />
-            <Route path="deals" element={<Deals />} />
-            <Route path="agents" element={<Agents />} />
-            <Route path="reports" element={<Reports />} />
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/leads" element={<Leads />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/deals" element={<Deals />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/reports" element={<Reports />} />
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </HashRouter>
   )

@@ -14,6 +14,7 @@ import {
   Bell,
   ChevronRight,
 } from 'lucide-react'
+import { safeJsonParse } from '../utils/safe'
 
 const nav = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -58,7 +59,7 @@ export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const navigate = useNavigate()
-  const user = JSON.parse(localStorage.getItem('user') || '{"name":"Guest","role":"shared workspace"}')
+  const user = safeJsonParse(localStorage.getItem('user'), { name: 'Guest', role: 'shared workspace' })
 
   const logout = () => {
     localStorage.removeItem('token')

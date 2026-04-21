@@ -52,6 +52,7 @@ export default function Properties() {
   const [properties, setProperties] = useState<Property[]>([])
   const [agents, setAgents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Property | null>(null)
   const [search, setSearch] = useState('')
@@ -66,6 +67,7 @@ export default function Properties() {
   const load = async () => {
     try {
       setLoading(true)
+      setError('')
       const params: any = {}
       if (search) params.search = search
       if (typeFilter) params.type = typeFilter
@@ -74,7 +76,11 @@ export default function Properties() {
       setProperties(propertiesRes.data)
       setAgents(agentsRes.data)
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Failed to load properties')
+      const message = err.response?.data?.error || 'Properties are still loading from the demo database.'
+      setProperties([])
+      setAgents([])
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -213,7 +219,16 @@ export default function Properties() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {loading ? (
-          <div className="col-span-full flex justify-center py-16"><div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" /></div>
+          <div className="col-span-full rounded-2xl border border-white/[0.06] bg-[#0f0f1a] px-6 py-16 text-center">
+            <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <p className="mt-4 text-sm font-medium text-white">Loading properties</p>
+            <p className="mt-1 text-[12px] text-slate-500">Listings will appear as soon as the shared demo data responds.</p>
+          </div>
+        ) : error ? (
+          <div className="col-span-full rounded-2xl border border-amber-500/20 bg-amber-500/5 px-6 py-16 text-center">
+            <p className="text-sm font-medium text-amber-300">Properties are not ready yet</p>
+            <p className="mt-2 text-[12px] text-slate-400">{error}</p>
+          </div>
         ) : properties.length === 0 ? (
           <div className="col-span-full rounded-2xl border border-dashed border-white/[0.08] bg-[#0f0f1a] px-6 py-12 text-center text-slate-500">
             No properties found

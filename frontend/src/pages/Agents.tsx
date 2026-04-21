@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../api'
 import { Pencil, Trash2, X, Handshake, Users, TrendingUp, ShieldCheck } from 'lucide-react'
+import { formatDisplayDate, safeJsonParse } from '../utils/safe'
 
 const ROLES = ['admin', 'manager', 'agent']
 const ROLE_COLORS: Record<string, string> = {
@@ -25,18 +26,24 @@ interface Agent {
 export default function Agents() {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Agent | null>(null)
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Record<string, string>>()
-  const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+  const currentUser = safeJsonParse<{ id?: number }>(localStorage.getItem('user'), {})
   const isAdmin = true
 
   const load = async () => {
     try {
+      setLoading(true)
+      setError('')
       const res = await api.get('/agents')
       setAgents(res.data)
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Failed to load agents')
+      const message = err.response?.data?.error || 'Agents are still loading from the shared demo workspace.'
+      setAgents([])
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -124,7 +131,16 @@ export default function Agents() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16"><div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" /></div>
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0f0f1a] px-6 py-16 text-center">
+          <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          <p className="mt-4 text-sm font-medium text-white">Loading agents</p>
+          <p className="mt-1 text-[12px] text-slate-500">The demo team directory may take a few seconds to appear.</p>
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-6 py-16 text-center">
+          <p className="text-sm font-medium text-amber-300">Agents are not ready yet</p>
+          <p className="mt-2 text-[12px] text-slate-400">{error}</p>
+        </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {agents.map((agent, index) => (
@@ -162,7 +178,7 @@ export default function Agents() {
               <div className="mt-4 flex items-center justify-between border-t border-white/[0.05] pt-4">
                 <div className="flex items-center gap-2 text-[11px] text-slate-500">
                   <ShieldCheck size={12} />
-                  Joined {new Date(agent.created_at).toLocaleDateString('en-IN')}
+                  Joined {formatDisplayDate(agent.created_at)}
                 </div>
                 {isAdmin && (
                   <div className="flex items-center gap-2">

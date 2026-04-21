@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../api'
 import { Plus, Search, Pencil, Trash2, X, ChevronDown, Phone, Mail, DollarSign, UserRound, Sparkles } from 'lucide-react'
+import { formatDisplayDate } from '../utils/safe'
 
 const STATUSES = ['new', 'contacted', 'qualified', 'closed', 'lost']
 const SOURCES = ['website', 'referral', 'facebook', 'google', 'call', 'manual']
@@ -176,7 +177,7 @@ export default function Leads() {
                     <span className={`inline-flex w-fit items-center rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize ${STATUS_COLORS[lead.status] || ''}`}>{lead.status}</span>
                   </div>
                   <p className="mt-1 text-[11px] text-slate-500">
-                    Created {new Date(lead.created_at).toLocaleDateString('en-IN')} • Source: <span className="capitalize text-slate-400">{lead.source || 'manual'}</span>
+                    Created {formatDisplayDate(lead.created_at)} • Source: <span className="capitalize text-slate-400">{lead.source || 'manual'}</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">

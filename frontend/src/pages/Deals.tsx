@@ -41,6 +41,7 @@ export default function Deals() {
   const [properties, setProperties] = useState<any[]>([])
   const [agents, setAgents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Deal | null>(null)
   const [movingId, setMovingId] = useState<number | null>(null)
@@ -49,6 +50,7 @@ export default function Deals() {
   const load = async () => {
     try {
       setLoading(true)
+      setError('')
       const [kb, cl, pr, ag] = await Promise.all([
         api.get('/deals/kanban'),
         api.get('/clients'),
@@ -60,7 +62,13 @@ export default function Deals() {
       setProperties(pr.data)
       setAgents(ag.data)
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Failed to load deal pipeline')
+      const message = err.response?.data?.error || 'The deal pipeline is still loading from the shared demo database.'
+      setKanban({})
+      setClients([])
+      setProperties([])
+      setAgents([])
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -162,7 +170,16 @@ export default function Deals() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16"><div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" /></div>
+        <div className="rounded-3xl border border-white/[0.06] bg-[#0f0f1a] px-6 py-16 text-center">
+          <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          <p className="mt-4 text-sm font-medium text-white">Loading deal pipeline</p>
+          <p className="mt-1 text-[12px] text-slate-500">We are pulling clients, properties, agents, and stage data together.</p>
+        </div>
+      ) : error ? (
+        <div className="rounded-3xl border border-amber-500/20 bg-amber-500/5 px-6 py-16 text-center">
+          <p className="text-sm font-medium text-amber-300">Deals are not ready yet</p>
+          <p className="mt-2 text-[12px] text-slate-400">{error}</p>
+        </div>
       ) : totalDeals === 0 ? (
         <div className="rounded-3xl border border-dashed border-white/[0.08] bg-[#0f0f1a] px-6 py-12 text-center">
           <p className="text-sm font-medium text-slate-200">No deals in the pipeline yet</p>

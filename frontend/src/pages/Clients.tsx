@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../api'
 import { Plus, Search, Pencil, Trash2, X, Phone, Mail, ChevronDown } from 'lucide-react'
+import { formatDisplayDate } from '../utils/safe'
 
 const TYPES = ['buyer', 'seller', 'both']
 const TYPE_COLORS: Record<string, string> = { buyer: 'bg-blue-500/10 text-blue-300 border-blue-500/20', seller: 'bg-violet-500/10 text-violet-300 border-violet-500/20', both: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' }
@@ -127,7 +128,7 @@ export default function Clients() {
               </div>
             </div>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.05]">
-              <span className="text-[11px] text-slate-600">{new Date(c.created_at).toLocaleDateString('en-IN')}</span>
+              <span className="text-[11px] text-slate-600">{formatDisplayDate(c.created_at)}</span>
               <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => openEdit(c)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.06] transition-all"><Pencil size={11} /></button>
                 <button onClick={() => deleteClient(c.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-all"><Trash2 size={11} /></button>
